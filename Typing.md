@@ -120,6 +120,11 @@ Type is determined by behavior (methods supported), not explicit declaration.
 
 “If it behaves like a duck, it is a duck.”
 
+Do not check class or declared type.
+Use the object if it supports the required operation.
+
+Only behavior matters.
+
 Example (Python):
 
 ```
