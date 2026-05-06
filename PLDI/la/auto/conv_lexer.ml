@@ -1,12 +1,13 @@
-# 5 "conv_lexer.mll"
+# 9 "conv_lexer.mll"
  
 exception Lexer_exception of string
 
+(* Token type: either an identifier (word) or end-of-file *)
 type token =
-    Id of string
-  | EOF
+    Id of string    (* a word made of letters/digits *)
+  | EOF             (* end of input *)
 
-# 10 "conv_lexer.ml"
+# 11 "conv_lexer.ml"
 let __ocaml_lex_tables = {
   Lexing.lex_base =
    "\000\000\253\255\254\255\075\000";
@@ -120,36 +121,40 @@ and __ocaml_lex_scan_words_rec lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
 let
-# 23 "conv_lexer.mll"
+# 25 "conv_lexer.mll"
           s
-# 126 "conv_lexer.ml"
+# 127 "conv_lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 23 "conv_lexer.mll"
+# 25 "conv_lexer.mll"
             (  Id(s) )
-# 130 "conv_lexer.ml"
+# 131 "conv_lexer.ml"
 
   | 1 ->
-# 24 "conv_lexer.mll"
+# 26 "conv_lexer.mll"
             ( EOF  )
-# 135 "conv_lexer.ml"
+# 136 "conv_lexer.ml"
 
   | 2 ->
-# 25 "conv_lexer.mll"
+# 27 "conv_lexer.mll"
             ( scan_words lexbuf )
-# 140 "conv_lexer.ml"
+# 141 "conv_lexer.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf;
       __ocaml_lex_scan_words_rec lexbuf __ocaml_lex_state
 
 ;;
 
-# 36 "conv_lexer.mll"
+# 32 "conv_lexer.mll"
  
+
+(* Print every entry in a hash table: word -> count *)
 let print_table t =
   (Hashtbl.iter (fun key value -> (Printf.printf "%s %d\n" key !value)) t)
 
+(* Generic list printer *)
 let print_list l p = print_newline (); List.iter p l
 
+(* Sort a hash table into an association list by count (ascending) *)
 let sort_table t =
   let assoc_list = (Hashtbl.fold (fun k v acc -> (k, !v) :: acc) t []) in
     List.sort
@@ -157,9 +162,11 @@ let sort_table t =
         fun (k1, v1) (k2, v2) -> if v1 > v2 then 1 else if v1 < v2 then -1 else 0
       ) assoc_list
 
+(* Common English words to ignore (stop words) *)
 let reject_words = [ "let"; "the"; "is"; "for"; "I"; "in"; "on"; "upon"; "between"; "under"; "above"; "over";
   "as"; "at"; "be"; "an"; "a"; "the"; "from"; "to"; "upto"; "am"; "was"; "would"; "could"; "should"; "shall" ]
 
+(* Build a hash table of stop words for O(1) lookup *)
 let reject_words_table =
   let table = Hashtbl.create 30 in
   let rec create_reject_words_table = function
@@ -167,8 +174,10 @@ let reject_words_table =
     | h :: t -> (Hashtbl.add table h ()); create_reject_words_table t
   in
   create_reject_words_table reject_words
-    
 
+
+(* Read all words from stdin, filtering out stop words.
+   Returns a list of words in order. *)
 let read_all_words () =
   let lexbuf = Lexing.from_channel stdin in
   let rec read_next_word word_list =
@@ -176,19 +185,17 @@ let read_all_words () =
       match next_token with
           Id(s)  ->
             if not (Hashtbl.mem reject_words_table s) then
-              (read_next_word (s :: word_list))
+              (read_next_word (s :: word_list))   (* keep this word *)
             else
-              read_next_word word_list
+              read_next_word word_list            (* skip stop word *)
         | EOF -> word_list
   in
   (List.rev (read_next_word []))
 
-(*
-  Return a hash table with key = word, value = number of occurance.
-*)
+(* Build a frequency table: word -> ref(count).
+   If a word is seen again, increment its count; otherwise add it. *)
 let make_table word_list =
   let table = Hashtbl.create 30 in
-  (* Enter one word. Increment count by 1 if already there; else, create entry *)
   let rec enter_word = function
       h :: t ->
         if Hashtbl.mem table h then
@@ -201,6 +208,7 @@ let make_table word_list =
   enter_word word_list;
   table
 
+(* Main: read words -> build table -> print unsorted -> print sorted *)
 let main () =
   let word_list = read_all_words () in
   let table = make_table word_list
@@ -212,4 +220,4 @@ let main () =
 
 main ()
 
-# 216 "conv_lexer.ml"
+# 224 "conv_lexer.ml"
