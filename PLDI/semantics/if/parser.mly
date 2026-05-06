@@ -1,6 +1,6 @@
+%{
 (* ocamlyacc grammar for the "if" language.
    Extends the const grammar with: if BOOLEAN then expr else expr. *)
-%{
 %}
 
 %token NEWLINE WS COMMA EOF LPAREN RPAREN COLON
@@ -23,6 +23,5 @@ expr :
   | if_expr { $1 }
 ;
 
-(* if-then-else: the condition is a boolean literal (true/false) *)
 if_expr : IF BOOLEAN THEN expr ELSE expr { Expression.IfExpr($2, $4, $6) }
 %%

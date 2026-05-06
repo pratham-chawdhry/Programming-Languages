@@ -1,7 +1,7 @@
+%{
 (* ocamlyacc grammar for the let2 language.
    Same rules as let/parser.mly but uses the unified Expression.expr type
    for both boolean and integer expressions. *)
-%{
 %}
 
 %token          NEWLINE WS COMMA EOF LPAREN RPAREN COLON
@@ -13,7 +13,7 @@
 %token <bool>   BOOLEAN
 %start expr
 %type <Expression.expr> expr
-%type <Expression.expr> bool_expr     (* booleans are now expr too *)
+%type <Expression.expr> bool_expr
 
 %left ADD SUBTRACT
 %left AND OR

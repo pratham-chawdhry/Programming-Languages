@@ -1,9 +1,9 @@
+%{
 (* ocamlyacc grammar for the "let" language.
    Extends if_bool grammar with: variable references (ID) and let-bindings.
    New rules:
      ID                      -> variable reference
      LET ID EQ expr IN expr  -> let x = e1 in e2 *)
-%{
 %}
 
 %token          NEWLINE WS COMMA EOF LPAREN RPAREN COLON
@@ -24,12 +24,12 @@
 %% /* Grammar rules and actions follow */
 
 expr :
-  | ID                               { Expression.Id($1)              }  (* variable *)
+  | ID                               { Expression.Id($1)              }
   | expr ADD expr                    { Expression.Add($1, $3)         }
   | expr SUBTRACT expr               { Expression.Subtract($1, $3)    }
   | INTEGER                          { Expression.Const $1            }
   | IF bool_expr THEN expr ELSE expr { Expression.IfExpr($2, $4, $6)  }
-  | LET ID EQ expr IN expr           { Expression.LetExpr($2, $4, $6) }  (* let binding *)
+  | LET ID EQ expr IN expr           { Expression.LetExpr($2, $4, $6) }
 ;
 
 bool_expr:

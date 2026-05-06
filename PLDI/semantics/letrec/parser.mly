@@ -1,3 +1,4 @@
+%{
 (* ocamlyacc grammar for the letrec language.
    Extends let2 grammar with:
    - Multiplication (expr MUL expr)
@@ -6,7 +7,6 @@
    - Function application (expr expr) — juxtaposition = application
    - let rec for recursive functions
    - Equality (expr = expr) in boolean expressions *)
-%{
 %}
 
 %token          NEWLINE WS COMMA EOF LPAREN RPAREN COLON
@@ -33,19 +33,17 @@ expr :
   | INTEGER                          { Expression.IntConst $1     }
   | expr ADD expr                    { Expression.Add($1, $3)     }
   | expr SUBTRACT expr               { Expression.Sub($1, $3)     }
-  | expr MUL expr                    { Expression.Multiply($1, $3)     }  (* multiplication *)
-  | LPAREN expr RPAREN               { $2                         }  (* parenthesised expr *)
+  | expr MUL expr                    { Expression.Multiply($1, $3)     }
+  | LPAREN expr RPAREN               { $2                         }
   | IF bool_expr THEN expr ELSE expr { Expression.If($2, $4, $6)  }
-  | LET ID EQ fundef IN expr         { Expression.Let($2, $4, $6) }  (* let f = fun x -> ... *)
-  | LET REC ID EQ recfundef IN expr  { Expression.Let($3, $5, $7) }  (* let rec f = fun x -> ... *)
-  | expr expr                        { Expression.FunApp($1, $2)  }  (* function application *)
+  | LET ID EQ fundef IN expr         { Expression.Let($2, $4, $6) }
+  | LET REC ID EQ recfundef IN expr  { Expression.Let($3, $5, $7) }
+  | expr expr                        { Expression.FunApp($1, $2)  }
 ;
 
-(* Non-recursive function definition: fun param -> body *)
 fundef : FUN ID RTARROW expr         { Expression.FunDef($2, $4)  }
 ;
 
-(* Recursive function definition: same syntax but creates RecFunDef *)
 recfundef : FUN ID RTARROW expr      { Expression.RecFunDef($2, $4)  }
 ;
 
@@ -54,7 +52,7 @@ bool_expr:
   | bool_expr AND bool_expr { Expression.And($1, $3) }
   | bool_expr OR bool_expr { Expression.Or($1, $3) }
   | NOT bool_expr { Expression.Not($2) }
-  | expr EQ expr { Expression.Equals($1, $3) }       (* equality comparison *)
-  | LPAREN bool_expr RPAREN { $2 }                    (* parenthesised bool *)
+  | expr EQ expr { Expression.Equals($1, $3) }
+  | LPAREN bool_expr RPAREN { $2 }
 ;
 %%

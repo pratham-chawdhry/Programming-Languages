@@ -1,7 +1,7 @@
+%{
 (* ocamlyacc grammar for the if_bool language.
    Extends "if" grammar with: compound boolean expressions (and, or, not).
    The condition in if-then-else is now a bool_expr, not just a literal. *)
-%{
 %}
 
 %token NEWLINE WS COMMA EOF LPAREN RPAREN COLON
@@ -16,8 +16,8 @@
 %type <Expression.bool_expr> bool_expr
 
 %left ADD SUBTRACT
-%left AND OR          (* and/or have equal precedence, left-associative *)
-%right NOT            (* not binds tighter and is right-associative *)
+%left AND OR
+%right NOT
 
 %% /* Grammar rules and actions follow */
 
@@ -28,10 +28,8 @@ expr :
   | if_expr { $1 }
 ;
 
-(* if-then-else now takes a boolean expression, not a literal *)
 if_expr : IF bool_expr THEN expr ELSE expr { Expression.IfExpr($2, $4, $6) }
 
-(* Boolean expressions: literals, and, or, not *)
 bool_expr:
     BOOLEAN { Expression.Boolean $1 }
   | bool_expr AND bool_expr { Expression.And($1, $3) }

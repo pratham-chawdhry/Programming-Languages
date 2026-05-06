@@ -1,9 +1,9 @@
+%{
 (* ocamlyacc grammar for the proc language.
    Like letrec grammar but WITHOUT let rec — only non-recursive functions.
    Key rules:
      FUN ID RTARROW expr  -> function definition (fun x -> body)
      expr expr            -> function application (juxtaposition) *)
-%{
 %}
 
 %token          NEWLINE WS COMMA EOF LPAREN RPAREN COLON
@@ -28,11 +28,11 @@ expr :
   | INTEGER                          { Expression.IntConst $1     }
   | expr ADD expr                    { Expression.Add($1, $3)     }
   | expr SUBTRACT expr               { Expression.Sub($1, $3)     }
-  | LPAREN expr RPAREN               { $2;                        }  (* parenthesised expr *)
+  | LPAREN expr RPAREN               { $2;                        }
   | IF bool_expr THEN expr ELSE expr { Expression.If($2, $4, $6)  }
   | LET ID EQ expr IN expr           { Expression.Let($2, $4, $6) }
-  | FUN ID RTARROW expr              { Expression.FunDef($2, $4)  }  (* function definition *)
-  | expr expr                        { Expression.FunApp($1, $2)  }  (* function application *)
+  | FUN ID RTARROW expr              { Expression.FunDef($2, $4)  }
+  | expr expr                        { Expression.FunApp($1, $2)  }
 ;
 
 bool_expr:
