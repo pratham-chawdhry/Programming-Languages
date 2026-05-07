@@ -9,10 +9,10 @@ let evaluate () =
         stdin
     in
     let e1 =
-      let lexbuf = Lexing.from_channel cin in
-        Parser.expr Lexer.scan lexbuf
+      let lexbuf = Lexing.from_channel cin in  (*Lexbuf has buffer of characters from input stream *)
+        Parser.expr Lexer.scan lexbuf   (*reads tokens from the lexer.scan(lexbuf). *) (*parser builds AST from tokens *) 
     in
-    Printf.printf "\n\t = %d\n" (Expression.eval e1)
+    Printf.printf "\n\t = %d\n" (Expression.eval e1) (*prints the result of the evaluation of the expression e1. *)
   with End_of_file -> exit 0
 
 let _ = evaluate ()

@@ -35,4 +35,5 @@ bool_expr:
   | bool_expr AND bool_expr { Expression.And($1, $3) }
   | bool_expr OR bool_expr { Expression.Or($1, $3) }
   | NOT bool_expr { Expression.Not($2) }
+  | LPAREN bool_expr RPAREN { $2 }
 %%

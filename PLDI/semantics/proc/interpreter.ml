@@ -78,7 +78,8 @@ let rec eval e env : Expression.expr =
       )
 
   (* Function definition: capture the current environment to form a closure *)
-  | Expression.FunDef(par, body) -> Expression.Closure(par, body, env)
+  | Expression.FunDef(par, body) -> Expression.Closure(par, body, env)  
+  (*Example: let f = fun x -> x + y with y=3 -> let f = Closure("x", Add(Id "x", Id "y"), NonEmptyEnv(("y", IntConst(3)), EmptyEnv)) in f 10 ->*) 
 
   (* Function application:
      1. Evaluate f to get Closure(par, body, env')
@@ -90,3 +91,4 @@ let rec eval e env : Expression.expr =
         let (par, body, env') = (getClosureValue e') and arg' = (eval arg env) in
           let env'' = (Expression.addBinding par arg' env') in
           (eval body env'')
+  (*Example: let f = fun x -> x + 1 in f 10 -> let f = Closure("x", Add(Id "x", IntConst 1), EmptyEnv) in FunApp(f, IntConst 10) ->  *) 

@@ -26,8 +26,10 @@ expr :
   | INTEGER                          { Expression.IntConst $1     }
   | expr ADD expr                    { Expression.Add($1, $3)     }
   | expr SUBTRACT expr               { Expression.Sub($1, $3)     }
+  | bool_expr                        { $1 }
   | IF bool_expr THEN expr ELSE expr { Expression.If($2, $4, $6)  }
   | LET ID EQ expr IN expr           { Expression.Let($2, $4, $6) }
+  | LPAREN expr RPAREN               { $2 }
 ;
 
 bool_expr:
@@ -35,5 +37,6 @@ bool_expr:
   | bool_expr AND bool_expr { Expression.And($1, $3) }
   | bool_expr OR bool_expr { Expression.Or($1, $3) }
   | NOT bool_expr { Expression.Not($2) }
+  | LPAREN bool_expr RPAREN { $2 }
 ;
 %%

@@ -3,4 +3,4 @@ let y = 10       in
 let sum1 = x + y in
 let x = 100      in
 let z = 5        in
-  if false or true then sum1 - z + x else 0
+  if false or true then true else false

@@ -1,1 +1,2 @@
-123 + 1
+if (true or false) and (not false) then 100 else 200
+

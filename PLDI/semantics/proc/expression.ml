@@ -18,9 +18,9 @@ type expr =
   | Or        of expr * expr       (* logical or *)
   | And       of expr * expr       (* logical and *)
   | Equals    of expr * expr       (* equality comparison *)
-  | Closure   of string * expr * env (* runtime closure: (param, body, captured_env) *)
-  | FunDef    of string * expr     (* fun param -> body *)
-  | FunApp    of expr * expr       (* function application: e1 e2 *)
+  | Closure   of string * expr * env (* Result of 'fun x -> x'. AST: Closure("x", Id "x", EmptyEnv) *)
+  | FunDef    of string * expr     (* Code: 'fun x -> x + 1'. AST: FunDef("x", Add(Id "x", IntConst 1)) *)
+  | FunApp    of expr * expr       (* Code: 'f 10'. AST: FunApp(Id "f", IntConst 10) *)
 
 (* Environment: linked list of (name, value) pairs *)
 and env =

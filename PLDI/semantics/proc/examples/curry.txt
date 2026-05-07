@@ -1,0 +1,5 @@
+let make_adder = fun x -> fun y -> x + y
+in
+let add_five = make_adder 5
+in
+add_five 10
