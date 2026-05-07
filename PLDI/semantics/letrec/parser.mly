@@ -36,8 +36,12 @@ expr :
   | expr MUL expr                    { Expression.Multiply($1, $3)     }
   | LPAREN expr RPAREN               { $2                         }
   | IF bool_expr THEN expr ELSE expr { Expression.If($2, $4, $6)  }
+
   | LET ID EQ fundef IN expr         { Expression.Let($2, $4, $6) }
+  | LET ID EQ LPAREN fundef RPAREN IN expr { Expression.Let($2, $5, $8) }
   | LET REC ID EQ recfundef IN expr  { Expression.Let($3, $5, $7) }
+  | LET REC ID EQ LPAREN recfundef RPAREN IN expr { Expression.Let($3, $6, $9) }
+  | LET ID EQ expr IN expr           { Expression.Let($2, $4, $6) }
   | expr expr                        { Expression.FunApp($1, $2)  }
 ;
 

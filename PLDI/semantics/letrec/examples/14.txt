@@ -3,4 +3,4 @@ let rec fact =
     if n = 1 then 1
     else ((fact (n - 1)) * n)
 in
-(fact 11)
+(fact 5)
